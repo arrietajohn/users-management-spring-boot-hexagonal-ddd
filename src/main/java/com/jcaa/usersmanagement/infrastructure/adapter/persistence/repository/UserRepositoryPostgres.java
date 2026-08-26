@@ -28,7 +28,7 @@ import java.util.Optional;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class UserRepositoryMySQL
+public class UserRepositoryPostgres
     implements SaveUserPort,
         UpdateUserPort,
         GetUserByIdPort,
@@ -36,6 +36,7 @@ public class UserRepositoryMySQL
         GetAllUsersPort,
         DeleteUserPort {
 
+  // Sentencias SQL adaptadas y compatibles con PostgreSQL
   private static final String SQL_INSERT =
       "INSERT INTO users "
       + "(id, name, email, password, role, status, created_at, updated_at) "

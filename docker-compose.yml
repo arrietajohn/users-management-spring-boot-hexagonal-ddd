@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  # Servicio de Base de Datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: users-postgres-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: crud_usuarios
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      # Persistencia de datos local
+      - postgres_data:/var/lib/postgresql/data
+      # Script de inicializacion del esquema de base de datos
+      - ./src/main/resources/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d crud_usuarios"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Servicio de la Aplicacion Java (Spring Boot)
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: users-management-app
+    ports:
+      - "8080:8080"
+    environment:
+      PORT: 8080
+      # Conexion al servicio db dentro de la red del compose
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: crud_usuarios
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      # Configuración de SMTP (Valores locales de desarrollo)
+      SMTP_HOST: smtp.gmail.com
+      SMTP_PORT: 587
+      SMTP_USERNAME: tu_correo@gmail.com
+      SMTP_PASSWORD: tu_app_password_aqui
+      SMTP_FROM_ADDRESS: tu_correo@gmail.com
+      SMTP_FROM_NAME: Gestion de Usuarios
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
