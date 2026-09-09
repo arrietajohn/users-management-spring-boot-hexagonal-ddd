@@ -1,0 +1,62 @@
+services:
+  # =============================================
+  # MySQL
+  # =============================================
+  mysql:
+    image: mysql:8.0
+    container_name: users-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-crud_usuarios}
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # =============================================
+  # MailHog (fake SMTP for local development)
+  # =============================================
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: users-mailhog
+    ports:
+      - "1025:1025"   # SMTP
+      - "8025:8025"   # Web UI
+
+  # =============================================
+  # Spring Boot Application
+  # =============================================
+  app:
+    build: .
+    container_name: users-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_APPLICATION_JSON: >-
+        {
+          "db": {
+            "host": "mysql",
+            "port": "3306",
+            "name": "${DB_NAME:-crud_usuarios}",
+            "username": "root",
+            "password": "${DB_ROOT_PASSWORD:-root}"
+          },
+          "smtp": {
+            "host": "mailhog",
+            "port": "1025",
+            "username": "",
+            "password": "",
+            "from": {
+              "address": "no-reply@example.com",
+              "name": "Gestion de Usuarios"
+            }
+          }
+        }
+    depends_on:
+      mysql:
+        condition: service_healthy
