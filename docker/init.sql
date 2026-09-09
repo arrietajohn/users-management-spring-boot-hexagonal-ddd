@@ -19,15 +19,14 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Usuario administrador inicial
--- Password: Admin1234! (hash generado con BCrypt cost=12)
--- IMPORTANTE: Reemplazar con un hash real si se usa en producción
+-- Usuario administrador inicial (password: Admin1234!)
+-- NOTA: reemplazar el hash por uno BCrypt real si se pretende usar fuera de entornos locales.
 INSERT INTO users (id, name, email, password, role, status)
 VALUES (
     '00000000-0000-0000-0000-000000000001',
     'Administrador',
     'admin@example.com',
-    '$2a$12$K4C/1yvG1z0mZeQd0z0YOeT6g6wqKj6Vz6Qw6Qw6Qw6Qw6Qw6Qw6',
+    '$2a$12$placeholderHashReplaceWithRealBCryptHash',
     'ADMIN',
     'ACTIVE'
 );
