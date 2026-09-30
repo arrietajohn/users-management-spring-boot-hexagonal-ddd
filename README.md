@@ -88,27 +88,36 @@ docker compose down -v
 
 En Windows se puede utilizar `mvnw.cmd`.
 
-### Ejecutar
+## PostgreSQL con Docker
+
+Requisitos: Docker y Docker Compose.
+
+Para levantar PostgreSQL, MailHog y la aplicación:
 
 ```bash
-./mvnw spring-boot:run
-# o
-java -jar target/users-management-2.1.0.jar
+docker compose up -d --build
 ```
 
-La aplicación usa las propiedades de `src/main/resources/application.properties` por defecto (MySQL en `localhost`, SMTP en Gmail).
+Servicios disponibles:
 
----
+- API: `http://localhost:8080`
+- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
+- MailHog: `http://localhost:8025`
+- PostgreSQL: `localhost:5432`, base `crud_usuarios`, usuario `postgres`, contraseña `postgres`
 
-## Configuración SMTP
-
-Por defecto en Docker se usa **MailHog** como servidor SMTP de prueba. Para usar Gmail u otro proveedor real, sobrescribir las variables de entorno en `docker-compose.yml` o pasarlas al ejecutar:
+La configuración local usa el perfil `postgresql` por defecto. Las variables `DB_HOST`, `DB_PORT`,
+`DB_NAME`, `DB_USERNAME` y `DB_PASSWORD` permiten conectarse a otra instancia. Para apagar los
+servicios sin borrar los datos:
 
 ```bash
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=587
-SMTP_USERNAME=tu_correo@gmail.com
-SMTP_PASSWORD=tu_app_password
-SMTP_FROM_ADDRESS=tu_correo@gmail.com
-SMTP_FROM_NAME="Gestion de Usuarios"
+docker compose down
 ```
+
+Para borrar también el volumen de PostgreSQL:
+
+```bash
+docker compose down -v
+```
+
+El adaptador MySQL se conserva para compatibilidad y se puede activar con
+`SPRING_PROFILES_ACTIVE=mysql`.
