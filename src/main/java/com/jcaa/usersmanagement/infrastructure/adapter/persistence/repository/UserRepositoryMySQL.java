@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Slf4j
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class UserRepositoryMySQL
     implements SaveUserPort,
