@@ -12,7 +12,7 @@
 
   <groupId>com.jcaa.usersmanagement</groupId>
   <artifactId>users-management</artifactId>
-  <version>2.1.0</version>
+  <version>2.1.5</version>
 
   <properties>
     <!-- El parent de Spring Boot usa java.version para configurar el compilador -->
@@ -124,6 +124,14 @@
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations-jakarta</artifactId>
       <version>2.2.22</version>
+    </dependency>
+
+    <!-- Source: https://mvnrepository.com/artifact/com.tascape.qa/lipermi -->
+    <dependency>
+      <groupId>com.tascape.qa</groupId>
+      <artifactId>lipermi</artifactId>
+      <version>1.0.1</version>
+      <scope>compile</scope>
     </dependency>
 
     <!-- ======================================================== -->

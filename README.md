@@ -88,36 +88,19 @@ docker compose down -v
 
 En Windows se puede utilizar `mvnw.cmd`.
 
-## PostgreSQL con Docker
+## Despliegue en Render
 
-Requisitos: Docker y Docker Compose.
+El archivo `render.yaml` define el servicio web, el build con Docker y el despliegue
+automático de cada commit que llegue a la rama `main`.
 
-Para levantar PostgreSQL, MailHog y la aplicación:
+1. Crear un Blueprint en Render y seleccionar este repositorio.
+2. Completar en el panel los secretos marcados como requeridos: `DB_HOST`,
+   `DB_USERNAME`, `DB_PASSWORD`, `SMTP_USERNAME`, `SMTP_PASSWORD` y
+   `SMTP_FROM_ADDRESS`.
+3. Usar una instancia MySQL accesible desde Internet o desde la red privada de
+   Render y ejecutar `src/main/resources/schema.sql` una vez para crear el esquema.
+4. Desplegar el Blueprint. La API quedará disponible en el subdominio
+   `onrender.com` asignado por Render y Swagger UI en `/swagger-ui.html`.
 
-```bash
-docker compose up -d --build
-```
-
-Servicios disponibles:
-
-- API: `http://localhost:8080`
-- Swagger UI: `http://localhost:8080/swagger-ui/index.html`
-- MailHog: `http://localhost:8025`
-- PostgreSQL: `localhost:5432`, base `crud_usuarios`, usuario `postgres`, contraseña `postgres`
-
-La configuración local usa el perfil `postgresql` por defecto. Las variables `DB_HOST`, `DB_PORT`,
-`DB_NAME`, `DB_USERNAME` y `DB_PASSWORD` permiten conectarse a otra instancia. Para apagar los
-servicios sin borrar los datos:
-
-```bash
-docker compose down
-```
-
-Para borrar también el volumen de PostgreSQL:
-
-```bash
-docker compose down -v
-```
-
-El adaptador MySQL se conserva para compatibilidad y se puede activar con
-`SPRING_PROFILES_ACTIVE=mysql`.
+Las credenciales nunca deben guardarse en `application.properties` ni en
+`render.yaml`. Para desarrollo local, deben proporcionarse como variables de entorno.
